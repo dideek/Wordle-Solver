@@ -93,7 +93,13 @@ def run(answer_word):
         if check_win_condition(colors):
             print("Win")
             return
-
+        
+        
+def load_allowed_guesses():
+    filename='allowed_words.txt'
+    file = open(filename, 'r')
+    temp = file.read().splitlines()
+    return temp
 
 
 if __name__ == "__main__":
