@@ -21,6 +21,15 @@ def colors2table(color):
 
     return ret
 
+def table2color(table):
+    colors = 0
+    for item in table:
+        colors += item
+        colors*=4
+    colors//=4
+
+    return colors
+
 def map_colors(color_int):
     if color_int == 0: return "GRAY"
     elif color_int == 1: return "YELLOW"
@@ -46,6 +55,7 @@ def check_exact_position(answer_word, input_word):
 def check_presence_condition(answer_word, input_word):
     colors = 0
 
+    # Bitmapa dla zielonych kolorów
     for i in range(WORD_LENGTH):
         if input_word[i] in answer_word:
             colors += 1
