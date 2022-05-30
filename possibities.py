@@ -11,10 +11,7 @@ def reduce(guess, colors, words):
 
 def fits_rules(guess,colors,word):
     colors2 = check_conditions(word, guess);
-    for i in range(0,5):
-        if colors2[i]!=colors[i]:
-            return False
-    return True
+    return colors2==colors
 
 # xd = load_allowed_guesses()
 # xd2 = reduce('ready',[0,0,1,0,0],xd)
