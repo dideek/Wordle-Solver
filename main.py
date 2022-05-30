@@ -6,7 +6,7 @@ os.system("color")
 
 CHANCES = 5
 WORD_LENGTH = 5
-ANSWER_WORD = "abbey"
+ANSWER_WORD = "steal"
 GRAY, YELLOW, GREEN = 0, 1, 3
 
 # FORMAT BITMAPY: 5 x 2 bity
@@ -45,10 +45,12 @@ def check_exact_position(answer_word, input_word):
 
 def check_presence_condition(answer_word, input_word):
     colors = 0
+    tmp_answer_word = list(answer_word)
 
     for i in range(WORD_LENGTH):
-        if input_word[i] in answer_word:
+        if input_word[i] in tmp_answer_word:
             colors += 1
+            tmp_answer_word.remove(input_word[i])
         colors *= 4
     colors//=4
 
