@@ -112,11 +112,27 @@ def load_allowed_guesses():
     return temp
 
 def assign_frequencies():
-    words_assigned={}
+    words_assigned = {}
     for word in linex:
-        probability=word_frequency(word,'en')
-        words_assigned[word]=probability
-    return words_assigned
+        probability = word_frequency(word, 'en')
+        words_assigned[word] = probability
+    # define dict
+
+    # open file for writing
+    sorted_words = dict(sorted(words_assigned.items(), key=lambda item: item[1]))
+
+
+    return sorted_words
+
+
+def interpolate():
+    increment = 20 / len(sorted_words)
+    i = 0
+    interpolated_words = {}
+    for word in sorted_words:
+        x = -10 + increment * i
+        interpolated_words[word] = x
+        i+=1
 
 
 if __name__ == "__main__":
