@@ -1,5 +1,6 @@
 import sys, os
 from termcolor import colored, cprint
+from wordfreq import word_frequency
 os.system("color")
 
 
@@ -100,6 +101,13 @@ def load_allowed_guesses():
     file = open(filename, 'r')
     temp = file.read().splitlines()
     return temp
+
+def assign_frequencies():
+    words_assigned={}
+    for word in linex:
+        probability=word_frequency(word,'en')
+        words_assigned[word]=probability
+    return words_assigned
 
 
 if __name__ == "__main__":
