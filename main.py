@@ -1,7 +1,13 @@
+import sys, os
+from termcolor import colored, cprint
+os.system("color")
+
+
 CHANCES = 5
 WORD_LENGTH = 5
 ANSWER_WORD = "abbey"
 GRAY, YELLOW, GREEN = 0, 1, 3
+
 
 
 def map_colors(color_int):
@@ -58,9 +64,17 @@ def check_conditions(answer_word, input_word):
 
     return final_colors
 
-def print_colors(colors):
-    print(list(map(map_colors, colors)))
-
+def print_colored_input(input_word, colors):
+    input_word_letters = list(input_word)
+    for i in range(WORD_LENGTH):
+        if colors[i] == GRAY:
+            cprint(input_word_letters[i], "white", "on_red", end="")
+        elif colors[i] == GREEN:
+            cprint(input_word_letters[i], "white", "on_green", end="")
+        else:
+            cprint(input_word_letters[i], "white", "on_yellow", end="")
+    print()
+    
 def run(answer_word):
     print("Dawaj 5 literowe slowo")
 
@@ -75,7 +89,7 @@ def run(answer_word):
 
         # sprawdzamy wszystkie warunki
         colors = check_conditions(answer_word, input_word)
-        print_colors(colors)
+        print_colored_input(input_word, colors)
         if check_win_condition(colors):
             print("Win")
             return
