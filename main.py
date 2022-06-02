@@ -126,13 +126,29 @@ def assign_frequencies():
 
 
 def interpolate():
-    increment = 20 / len(sorted_words)
+    increment = 7/  len(sorted_words) # tą 7 mozna mzieniac
     i = 0
     interpolated_words = {}
     for word in sorted_words:
-        x = -10 + increment * i
+        x = -8 + increment * i*2 #  Tu -8 i i*2 tez mozna zmieniac zeby modyfikowac predkosc wzrostu grafu / przesunięcie wartości lewo prawo
         interpolated_words[word] = x
         i+=1
+    for word in interpolated_words:
+        x=1/(1+math.e**-interpolated_words[word])
+        interpolated_words[word]=x
+    #DEBUG
+    #values = interpolated_words.values()
+    # open file for writing
+    #f = open("interpolated_twice.txt", "w")
+
+    # write file
+    #f.write(str(interpolated_words))
+
+    # close file
+    #f.close()
+    #plt.plot(values)
+    #plt.show()
+    return interpolated_words
 
 
 if __name__ == "__main__":
