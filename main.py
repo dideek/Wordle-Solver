@@ -51,7 +51,7 @@ def run(answer):
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
-def run_badly(randomly):
+def run_random(answer):
     global words, first_guess
     if not first_guess:
         first_guess = random.choice(words)
@@ -61,6 +61,24 @@ def run_badly(randomly):
 
     while score < 6:
         guess = random.choice(new_words) if score > 0 else first_guess
+        colors = check_conditions(answer, guess)
+        score += 1
+        print_colored_input(guess, colors2table(colors))
+        if check_win_condition(colors):
+            print()
+            return score
+        new_words.remove(guess)
+        new_words = reduce(guess, colors, new_words)
+        print(f" [{len(new_words)}] words left")
+
+def run_most_common_word(answer):
+    global words, first_guess
+    new_words = assign_frequencies(words)
+
+    score = 0
+
+    while score < 6:
+        guess = new_words[-1]
         colors = check_conditions(answer, guess)
         score += 1
         print_colored_input(guess, colors2table(colors))
@@ -90,9 +108,9 @@ def play(answer_word):
             print("Win")
             return
 
-def assign_frequencies():
+def assign_frequencies(words):
     words_assigned = {}
-    for word in linex:
+    for word in words:
         probability = word_frequency(word, 'en')
         words_assigned[word] = probability
     # define dict
@@ -101,7 +119,7 @@ def assign_frequencies():
     sorted_words = dict(sorted(words_assigned.items(), key=lambda item: item[1]))
 
 
-    return sorted_words
+    return list(sorted_words.keys())
 
 
 def interpolate():
@@ -133,11 +151,19 @@ if __name__ == '__main__':
     first_guess = 'raise'
     words = load_words()
 
+    modes = {
+    "entropy":(run, "Wybór maksymalizujący entropię", "entropy.png"),
+    "common":(run_most_common_word, "Wybór najczęstszego słowa", "common.png"),
+    "random": (run_random, "Losowane słowa", "random.png")
+    }
+
+    algorithm,plot_title,plot_name = modes[sys.argv[1]]
+
     distribution = [0,0,0,0,0,0,0]
 
     for i,answer in enumerate(words):
         print(f"Game {i}")
-        score = run_badly(answer)
+        score = algorithm(answer)
         if score:
             distribution[score-1] += 1
             print(f"Score: {score} | {distribution}")
@@ -150,8 +176,8 @@ if __name__ == '__main__':
     print(f"Average score: {avg_score} Failures: {distribution[-1]}")
 
     plt.bar(acceptable_results, distribution)
-    plt.title(f"Losowane wyrazy - Średnia: {avg_score} - Porażki: {distribution[-1]}")
+    plt.title(f"{plot_title} - Średnia: {avg_score} - Porażki: {distribution[-1]}")
     plt.xlabel("Liczba prób")
     plt.ylabel("Liczba wystąpień")
-    plt.savefig("random.png")
+    plt.savefig(f"./graphs/{plot_name}")
     plt.show()
