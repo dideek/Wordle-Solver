@@ -1,6 +1,7 @@
 import sys, os
 from termcolor import colored, cprint
 from wordfreq import word_frequency
+import matplotlib.pyplot as plt
 
 from utils import *
 
@@ -145,5 +146,13 @@ if __name__ == '__main__':
             print("Failed")
             fails += 1
 
-    avg_score = weighted_average([1,2,3,4,5,6], distribution)
+    acceptable_results = [1,2,3,4,5,6]
+    avg_score = weighted_average(acceptable_results, distribution)
     print(f"Average score: {avg_score} Failures: {fails}")
+
+    plt.bar(acceptable_results, distribution)
+    plt.title("Dojebana metoda")
+    plt.xlabel("Liczba prob")
+    plt.ylabel("Liczba wystapien")
+    plt.savefig("dojebanametoda.png")
+    plt.show()
