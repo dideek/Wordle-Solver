@@ -15,67 +15,10 @@ GRAY, YELLOW, GREEN = 0, 1, 3
 # ZIELONY 3 - ŻÓŁTY 1 - SZARY 0
 # np GreenYellowGrayGreenGreen = 11 01 00 11 11
 
-
-def colors2table(color):
-    ret = [0,0,0,0,0]
-    for i in reversed(range(WORD_LENGTH)):
-        ret[i]=color%4
-        color//=4
-
-    return ret
-
-def table2color(table):
-    colors = 0
-    for item in table:
-        colors += item
-        colors*=4
-    colors//=4
-
-    return colors
-
 def map_colors(color_int):
     if color_int == 0: return "GRAY"
     elif color_int == 1: return "YELLOW"
     elif color_int == 3: return "GREEN"
-
-
-def check_win_condition(colors):
-    return colors == 0b1111111111
-
-
-def check_exact_position(answer_word, input_word):
-    colors = 0;
-
-    # Bitmapa dla zielonych kolorów
-    for i in range(WORD_LENGTH):
-        if answer_word[i] == input_word[i]:
-            colors += 3
-        colors *= 4
-    colors//=4
-
-    return colors
-
-def check_presence_condition(answer_word, input_word):
-    colors = 0
-    tmp_answer_word = list(answer_word)
-
-    # Bitmapa dla zielonych kolorów
-    for i in range(WORD_LENGTH):
-        if input_word[i] in tmp_answer_word:
-            colors += 1
-            tmp_answer_word.remove(input_word[i])
-        colors *= 4
-    colors//=4
-
-    return colors
-
-def check_conditions(answer_word, input_word):
-    exact_position_colors = check_exact_position(answer_word, input_word)
-    presence_colors = check_presence_condition(answer_word, input_word)
-
-    final_colors = exact_position_colors | presence_colors
-
-    return final_colors
 
 def print_colored_input(input_word, colors):
     input_word_letters = list(input_word)
@@ -93,22 +36,38 @@ def run(answer):
     if not first_guess:
         first_guess = find_best_guess(words)[0]
 
-    score = 1
-    colors = check_conditions(answer, first_guess)
-    print_colored_input(first_guess, colors2table(colors))
-    if check_win_condition(colors):
-        return score
-    new_words = reduce(first_guess, colors, words)
-    print(f" [{len(new_words)}] words left")
+    score = 0
+    new_words = words.copy()
 
     while score < 6:
-        guess = find_best_guess(new_words)[0]
+        guess = find_best_guess(new_words)[0] if score > 0 else first_guess
         colors = check_conditions(answer, guess)
         score += 1
         print_colored_input(guess, colors2table(colors))
         if check_win_condition(colors):
             print()
             return score
+        new_words.remove(guess)
+        new_words = reduce(guess, colors, new_words)
+        print(f" [{len(new_words)}] words left")
+
+def run_badly(randomly):
+    global words, first_guess
+    if not first_guess:
+        first_guess = random.choice(words)
+
+    score = 0
+    new_words = words.copy()
+
+    while score < 6:
+        guess = random.choice(new_words) if score > 0 else first_guess
+        colors = check_conditions(answer, guess)
+        score += 1
+        print_colored_input(guess, colors2table(colors))
+        if check_win_condition(colors):
+            print()
+            return score
+        new_words.remove(guess)
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
@@ -130,13 +89,6 @@ def play(answer_word):
         if check_win_condition(colors):
             print("Win")
             return
-
-
-def load_words(all_words=False):
-    filename='allowed_words.txt' if all_words else 'possible_words.txt'
-    file = open(filename, 'r')
-    temp = file.read().splitlines()
-    return temp
 
 def assign_frequencies():
     words_assigned = {}
@@ -181,21 +133,21 @@ if __name__ == '__main__':
     first_guess = 'raise'
     words = load_words()
 
-    distribution = [0,0,0,0,0,0]
+    distribution = [0,0,0,0,0,0,0]
     fails = 0
 
     for i,answer in enumerate(words):
-        break
         print(f"Game {i}")
-        score = run(answer)
+        score = run_badly(answer)
         if score:
             distribution[score-1] += 1
             print(f"Score: {score} | {distribution}")
         else:
             print("Failed")
+            distribution[-1] += 1
             fails += 1
 
-    acceptable_results = [1,2,3,4,5,6]
+    acceptable_results = [1,2,3,4,5,6,7]
     avg_score = weighted_average(acceptable_results, distribution)
     print(f"Average score: {avg_score} Failures: {fails}")
 
