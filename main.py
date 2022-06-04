@@ -134,7 +134,6 @@ if __name__ == '__main__':
     words = load_words()
 
     distribution = [0,0,0,0,0,0,0]
-    fails = 0
 
     for i,answer in enumerate(words):
         print(f"Game {i}")
@@ -145,15 +144,14 @@ if __name__ == '__main__':
         else:
             print("Failed")
             distribution[-1] += 1
-            fails += 1
 
     acceptable_results = [1,2,3,4,5,6,7]
     avg_score = weighted_average(acceptable_results, distribution)
-    print(f"Average score: {avg_score} Failures: {fails}")
+    print(f"Average score: {avg_score} Failures: {distribution[-1]}")
 
     plt.bar(acceptable_results, distribution)
-    plt.title(f"Dojebana metoda - srednia {avg_score}")
-    plt.xlabel("Liczba prob")
-    plt.ylabel("Liczba wystapien")
-    plt.savefig("dojebanametoda.png")
+    plt.title(f"Losowane wyrazy - Średnia: {avg_score} - Porażki: {distribution[-1]}")
+    plt.xlabel("Liczba prób")
+    plt.ylabel("Liczba wystąpień")
+    plt.savefig("random.png")
     plt.show()
