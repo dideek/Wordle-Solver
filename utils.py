@@ -4,6 +4,7 @@ import math
 import time
 import pickle
 import random
+import string
 
 from time import time_ns as xd
 from operator import itemgetter
@@ -21,15 +22,21 @@ def load_LUT(full=False):
         print("loaded")
         return LUT
 
-
 def load_words(full=False):
     filename='allowed_words.txt' if full else 'possible_words.txt'
     file = open(filename, 'r')
     temp = file.read().splitlines()
     return temp
 
-def weighted_average(distribution, weights):
-    return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights),2)
+def load_letter_distribution(words):
+    letters={x: 0 for x in string.ascii_lowercase}
+    for word in words:
+        for letter in word:
+            letters[letter] += 1
+    return letters
+
+def weighted_average(distribution, weights, rounding):
+    return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights), rounding)
 
 #Zwraca liste słów które dalej są możliwe
 def reduce(guess, colors, words):
@@ -116,10 +123,22 @@ def find_best_guess(words):
 
     return best
 
+def order_by_letters(words):
+    points={}
+    for word in words:
+        suma=0
+        for letter in set(word):
+            suma+=letters[letter]
+        points[word]=suma
+    sorted_words = dict(reversed(sorted(points.items(), key=lambda item: item[1])))
+    return list(sorted_words.keys())
+
 #####MAIN######
-all_lists = list(product([3,1,0],repeat=5));
-all_colors = [table2color(x) for x in all_lists]
+all_colors = [table2color(x) for x in list(product([3,1,0],repeat=5))]
+
 LUT = load_LUT()
+_words = load_words()
+letters = load_letter_distribution(_words)
 
 if __name__ == '__main__':
     t1 = time.time()

@@ -31,6 +31,7 @@ def print_colored_input(input_word, colors):
             cprint(input_word_letters[i], "white", "on_yellow", end="")
     #print()
 
+
 def run(answer):
     global words, first_guess
     if not first_guess:
@@ -77,6 +78,23 @@ def run_most_common_word(answer):
 
     while score < 6:
         guess = new_words[-1]
+        colors = check_conditions(answer, guess)
+        score += 1
+        print_colored_input(guess, colors2table(colors))
+        if check_win_condition(colors):
+            print()
+            return score
+        new_words.remove(guess)
+        new_words = reduce(guess, colors, new_words)
+        print(f" [{len(new_words)}] words left")
+
+def run_best_letter(answer):
+    global words
+    new_words = order_by_letters(words)
+    score = 0
+
+    while score < 6:
+        guess = new_words[0]
         colors = check_conditions(answer, guess)
         score += 1
         print_colored_input(guess, colors2table(colors))
@@ -152,7 +170,8 @@ if __name__ == '__main__':
     modes = {
     "entropy":(run, "Wybór maksymalizujący entropię", "entropy.png"),
     "common":(run_most_common_word, "Wybór najczęstszego słowa", "common.png"),
-    "random": (run_random, "Losowane słowa", "random.png")
+    "random": (run_random, "Losowane słowa", "random.png"),
+    "letters": (run_best_letter, "Wybór według najczęstszych liter", "letters.png")
     }
 
     algorithm,plot_title,plot_name = modes[sys.argv[1]]
@@ -170,7 +189,7 @@ if __name__ == '__main__':
             distribution[-1] += 1
 
     acceptable_results = [1,2,3,4,5,6,7]
-    avg_score = weighted_average(acceptable_results, distribution)
+    avg_score = weighted_average(acceptable_results, distribution, 2)
     print(f"Average score: {avg_score} Failures: {distribution[-1]}")
 
     plt.bar(acceptable_results, distribution)
