@@ -133,7 +133,7 @@ if __name__ == '__main__':
     first_guess = 'raise'
     words = load_words()
 
-    distribution = [0,0,0,0,0,0]
+    distribution = [0,0,0,0,0,0,0]
     fails = 0
 
     for i,answer in enumerate(words):
@@ -144,9 +144,10 @@ if __name__ == '__main__':
             print(f"Score: {score} | {distribution}")
         else:
             print("Failed")
+            distribution[-1] += 1
             fails += 1
 
-    acceptable_results = [1,2,3,4,5,6]
+    acceptable_results = [1,2,3,4,5,6,7]
     avg_score = weighted_average(acceptable_results, distribution)
     print(f"Average score: {avg_score} Failures: {fails}")
 
