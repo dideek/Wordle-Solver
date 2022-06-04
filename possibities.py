@@ -28,16 +28,16 @@ def fits_rules(guess,colors,word):
 
 #Liczy entropie słowa -- WIP
 def get_entropy(guess,words):
-    list = []
-    for color in all_colors:
-        new_words = reduce(guess,color,words)
-        prob = len(new_words)/len(words)
-        list.append(prob)
-    sum = entropy(list, base=2)
-    global count
-    count += 1
-    print("|= " + guess + " : " + str(sum) + "   " + str(count))
-    return (guess, sum)
+    list = [len(reduce(guess,color,words))/len(words) for color in all_colors]
+
+    # list = []
+    # for color in all_colors:
+    #     new_words = reduce(guess,color,words)
+    #     prob = len(new_words)/len(words)
+    #     list.append(prob)
+
+    #print("|= " + guess)
+    return (guess, entropy(list, base=2))
 
 def find_best_guess(words):
     entropies = []
@@ -52,7 +52,11 @@ with open('data.pkl','rb') as file:
     LUT = pickle.load(file)
 print("loaded")
 
-count = 0
+t1 = time.time()
+
 words = load_words()
 (guess, e) = find_best_guess(words)
+
+t2 = time.time()
+print(t2-t1)
 print(guess + " : " + str(e))
