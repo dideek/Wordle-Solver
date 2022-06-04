@@ -11,16 +11,16 @@ def get_LUT(words):
 if __name__ == '__main__':
 
     if len(sys.argv)>1 and sys.argv[1]=='true':
-        print("XDDDDD")
+        words = load_words(full=True)
+        data = get_LUT(words)
+        path = 'data_full.pkl'
     else:
-        print(":(")
+        words = load_words()
+        data = get_LUT(words)
+        path = 'data.pkl'
 
-    raise Exception
 
-    words = load_words()
-    data = get_LUT(words)
-
-    with open('data.pkl','wb') as file:
+    with open(path,'wb') as file:
         pickle.dump(data,file)
 
 

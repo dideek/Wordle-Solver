@@ -53,14 +53,12 @@ def run(answer):
 
 def run_random(answer):
     global words, first_guess
-    if not first_guess:
-        first_guess = random.choice(words)
 
     score = 0
     new_words = words.copy()
 
     while score < 6:
-        guess = random.choice(new_words) if score > 0 else first_guess
+        guess = random.choice(new_words)
         colors = check_conditions(answer, guess)
         score += 1
         print_colored_input(guess, colors2table(colors))
