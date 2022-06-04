@@ -13,9 +13,17 @@ from operator import itemgetter
 from itertools import product
 from itertools import repeat
 from scipy.stats import entropy
+from statistics import mean
 
 all_lists = list(product([3,1,0],repeat=5));
 all_colors = [table2color(x) for x in all_lists]
+
+with open('data.pkl','rb') as file:
+    LUT = pickle.load(file)
+print("loaded")
+
+def weighted_average(distribution, weights):
+    return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights),2)
 
 #Zwraca liste słów które dalej są możliwe
 def reduce(guess, colors, words):
@@ -48,15 +56,13 @@ def find_best_guess(words):
 
     return best
 
-with open('data.pkl','rb') as file:
-    LUT = pickle.load(file)
-print("loaded")
 
-t1 = time.time()
+if __name__ == '__main__':
+    t1 = time.time()
 
-words = load_words()
-(guess, e) = find_best_guess(words)
+    words = load_words()
+    (guess, e) = find_best_guess(words)
 
-t2 = time.time()
-print(t2-t1)
-print(guess + " : " + str(e))
+    t2 = time.time()
+    print(t2-t1)
+    print(guess + " : " + str(e))
