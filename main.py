@@ -200,7 +200,7 @@ if __name__ == '__main__':
     print(f"Average score: {avg_score} Failures: {fails}")
 
     plt.bar(acceptable_results, distribution)
-    plt.title("Dojebana metoda")
+    plt.title(f"Dojebana metoda - srednia {avg_score}")
     plt.xlabel("Liczba prob")
     plt.ylabel("Liczba wystapien")
     plt.savefig("dojebanametoda.png")
