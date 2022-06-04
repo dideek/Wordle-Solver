@@ -1,12 +1,9 @@
-from main import check_conditions
-from main import load_words
-from main import table2color
-
 import multiprocessing as mp
 
 import math
 import time
 import pickle
+import random
 
 from time import time_ns as xd
 from operator import itemgetter
@@ -15,12 +12,21 @@ from itertools import repeat
 from scipy.stats import entropy
 from statistics import mean
 
-all_lists = list(product([3,1,0],repeat=5));
-all_colors = [table2color(x) for x in all_lists]
+WORD_LENGTH = 5
 
-with open('data.pkl','rb') as file:
-    LUT = pickle.load(file)
-print("loaded")
+def load_LUT(full=False):
+    path = 'data.pkl' if not full else 'data_full.pkl'
+    with open('data.pkl','rb') as file:
+        LUT = pickle.load(file)
+        print("loaded")
+        return LUT
+
+
+def load_words(full=False):
+    filename='allowed_words.txt' if full else 'possible_words.txt'
+    file = open(filename, 'r')
+    temp = file.read().splitlines()
+    return temp
 
 def weighted_average(distribution, weights):
     return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights),2)
@@ -33,6 +39,60 @@ def reduce(guess, colors, words):
 def fits_rules(guess,colors,word):
     colors2 = check_conditions(word, guess);
     return colors2==colors
+
+def check_win_condition(colors):
+    return colors == 0b1111111111
+
+def check_exact_position(answer_word, input_word):
+    colors = 0;
+
+    # Bitmapa dla zielonych kolorów
+    for i in range(WORD_LENGTH):
+        if answer_word[i] == input_word[i]:
+            colors += 3
+        colors *= 4
+    colors//=4
+
+    return colors
+
+def check_presence_condition(answer_word, input_word):
+    colors = 0
+    tmp_answer_word = list(answer_word)
+
+    # Bitmapa dla zielonych kolorów
+    for i in range(WORD_LENGTH):
+        if input_word[i] in tmp_answer_word:
+            colors += 1
+            tmp_answer_word.remove(input_word[i])
+        colors *= 4
+    colors//=4
+
+    return colors
+
+def check_conditions(answer_word, input_word):
+    exact_position_colors = check_exact_position(answer_word, input_word)
+    presence_colors = check_presence_condition(answer_word, input_word)
+
+    final_colors = exact_position_colors | presence_colors
+
+    return final_colors
+
+def colors2table(color):
+    ret = [0,0,0,0,0]
+    for i in reversed(range(WORD_LENGTH)):
+        ret[i]=color%4
+        color//=4
+
+    return ret
+
+def table2color(table):
+    colors = 0
+    for item in table:
+        colors += item
+        colors*=4
+    colors//=4
+
+    return colors
 
 #Liczy entropie słowa -- WIP
 def get_entropy(guess,words):
@@ -56,6 +116,10 @@ def find_best_guess(words):
 
     return best
 
+#####MAIN######
+all_lists = list(product([3,1,0],repeat=5));
+all_colors = [table2color(x) for x in all_lists]
+LUT = load_LUT()
 
 if __name__ == '__main__':
     t1 = time.time()
