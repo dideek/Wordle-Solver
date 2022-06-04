@@ -23,7 +23,7 @@ def load_LUT(full=False):
         return LUT
 
 def load_words(full=False):
-    filename='allowed_words.txt' if full else 'possible_words.txt'
+    filename='./data/allowed_words.txt' if full else './data/possible_words.txt'
     file = open(filename, 'r')
     temp = file.read().splitlines()
     return temp
