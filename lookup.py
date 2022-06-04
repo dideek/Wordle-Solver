@@ -13,11 +13,11 @@ if __name__ == '__main__':
     if len(sys.argv)>1 and sys.argv[1]=='true':
         words = load_words(full=True)
         data = get_LUT(words)
-        path = 'data_full.pkl'
+        path = './data/data_full.pkl'
     else:
         words = load_words()
         data = get_LUT(words)
-        path = 'data.pkl'
+        path = './data/data.pkl'
 
 
     with open(path,'wb') as file:

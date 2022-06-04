@@ -16,8 +16,8 @@ from statistics import mean
 WORD_LENGTH = 5
 
 def load_LUT(full=False):
-    path = 'data.pkl' if not full else 'data_full.pkl'
-    with open('data.pkl','rb') as file:
+    path = './data/data.pkl' if not full else './data/data_full.pkl'
+    with open(path,'rb') as file:
         LUT = pickle.load(file)
         print("loaded")
         return LUT
