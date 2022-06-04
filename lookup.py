@@ -1,5 +1,5 @@
 from main import check_conditions
-from main import load_allowed_guesses
+from main import load_words
 import pickle
 
 def compare_to_all_words(guess,words):
@@ -8,7 +8,7 @@ def compare_to_all_words(guess,words):
 def get_LUT(words):
     return {word: compare_to_all_words(word, words) for word in words}
 
-words = load_allowed_guesses()
+words = load_words()
 data = get_LUT(words)
 
 with open('data.pkl','wb') as file:

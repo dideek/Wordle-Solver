@@ -105,8 +105,8 @@ def run(answer_word):
             return
 
 
-def load_allowed_guesses():
-    filename='allowed_words.txt'
+def load_words(all_words=False):
+    filename='allowed_words.txt' if all_words else 'possible_words.txt'
     file = open(filename, 'r')
     temp = file.read().splitlines()
     return temp

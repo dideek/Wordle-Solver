@@ -1,5 +1,5 @@
 from main import check_conditions
-from main import load_allowed_guesses
+from main import load_words
 from main import table2color
 
 import multiprocessing as mp
@@ -52,8 +52,7 @@ with open('data.pkl','rb') as file:
     LUT = pickle.load(file)
 print("loaded")
 
-
 count = 0
-words = load_allowed_guesses()
+words = load_words()
 (guess, e) = find_best_guess(words)
 print(guess + " : " + str(e))
