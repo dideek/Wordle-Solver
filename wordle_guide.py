@@ -1,5 +1,6 @@
 from main import *
 
+#"bygbb" ==> 0b0001110000
 def string2color(s):
     colors = 0
     guide = {"g":3,"y":1,"b":0}
@@ -10,6 +11,8 @@ def string2color(s):
 
     return colors
 
+#Podajesz kolory a to mówi co masz wpisać
+# b - szary, y - żółty, g - zielony
 def play_guide():
     global words, first_guess
     if not first_guess:

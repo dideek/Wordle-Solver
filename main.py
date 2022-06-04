@@ -15,6 +15,7 @@ GRAY, YELLOW, GREEN = 0, 1, 3
 # ZIELONY 3 - ŻÓŁTY 1 - SZARY 0
 # np GreenYellowGrayGreenGreen = 11 01 00 11 11
 
+#NIEUŻYWANE | mamy termcolor
 def map_colors(color_int):
     if color_int == 0: return "GRAY"
     elif color_int == 1: return "YELLOW"
@@ -31,7 +32,7 @@ def print_colored_input(input_word, colors):
             cprint(input_word_letters[i], "white", "on_yellow", end="")
     #print()
 
-
+#mode["entropy"]
 def run(answer):
     global words, first_guess
     if not first_guess:
@@ -52,6 +53,7 @@ def run(answer):
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
+#mode["random"]
 def run_random(answer):
     global words, first_guess
 
@@ -70,6 +72,7 @@ def run_random(answer):
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
+#mode["common"]
 def run_most_common_word(answer):
     global words, first_guess
     new_words = assign_frequencies(words)
@@ -88,6 +91,7 @@ def run_most_common_word(answer):
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
+#mode["letters"]
 def run_best_letter(answer):
     global words
     new_words = order_by_letters(words)
@@ -105,6 +109,7 @@ def run_best_letter(answer):
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
+#Wersja gry z user input
 def play(answer_word):
     print("Dawaj 5 literowe slowo")
 
@@ -124,6 +129,7 @@ def play(answer_word):
             print("Win")
             return
 
+#częstotliwość słow w języku angielskim
 def assign_frequencies(words):
     words_assigned = {}
     for word in words:
@@ -137,7 +143,7 @@ def assign_frequencies(words):
 
     return list(sorted_words.keys())
 
-
+#coś tam do tej sigmy
 def interpolate():
     increment = 7/  len(sorted_words) # tą 7 mozna mzieniac
     i = 0
@@ -167,6 +173,7 @@ if __name__ == '__main__':
     first_guess = 'raise'
     words = load_words()
 
+    #Wybór strategii za pomocą argv[1]
     modes = {
     "entropy":(run, "Wybór maksymalizujący entropię", "entropy.png"),
     "common":(run_most_common_word, "Wybór najczęstszego słowa", "common.png"),
@@ -176,8 +183,10 @@ if __name__ == '__main__':
 
     algorithm,plot_title,plot_name = modes[sys.argv[1]]
 
+    #Tabela wyników
     distribution = [0,0,0,0,0,0,0]
 
+    #Symulacja gry
     for i,answer in enumerate(words):
         print(f"Game {i}")
         score = algorithm(answer)
@@ -188,6 +197,7 @@ if __name__ == '__main__':
             print("Failed")
             distribution[-1] += 1
 
+    #Dane końcowe
     acceptable_results = [1,2,3,4,5,6,7]
     avg_score = weighted_average(acceptable_results, distribution, 2)
     print(f"Average score: {avg_score} Failures: {distribution[-1]}")

@@ -2,6 +2,8 @@ from utils import *
 import pickle
 import sys
 
+#Te 2 funckje tworzą lookup table
+#jeśli argv[1] == 'true' to generują długą liste
 def compare_to_all_words(guess,words):
     return {word: check_conditions(guess, word) for word in words}
 

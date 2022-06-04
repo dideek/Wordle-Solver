@@ -15,6 +15,8 @@ from statistics import mean
 
 WORD_LENGTH = 5
 
+#=========WCZYTYWANIE=========
+#Wczytuje Look-Up-Table | full - duża lista
 def load_LUT(full=False):
     path = './data/data.pkl' if not full else './data/data_full.pkl'
     with open(path,'rb') as file:
@@ -22,12 +24,14 @@ def load_LUT(full=False):
         print("loaded")
         return LUT
 
+#Wczytuje liste słow | full - duża lista
 def load_words(full=False):
     filename='./data/allowed_words.txt' if full else './data/possible_words.txt'
     file = open(filename, 'r')
     temp = file.read().splitlines()
     return temp
 
+#Oblicza częstotliwość każdej litery w liście słów
 def load_letter_distribution(words):
     letters={x: 0 for x in string.ascii_lowercase}
     for word in words:
@@ -35,21 +39,22 @@ def load_letter_distribution(words):
             letters[letter] += 1
     return letters
 
-def weighted_average(distribution, weights, rounding):
-    return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights), rounding)
-
+#=========KOLORY=========
 #Zwraca liste słów które dalej są możliwe
 def reduce(guess, colors, words):
     return [word for word in words if colors == LUT[word][guess]]
 
+#NIEUŻYWANE | Mamy od tego LUT
 #Sprawdza czy słowo jest legalne po danej próbie
 def fits_rules(guess,colors,word):
     colors2 = check_conditions(word, guess);
     return colors2==colors
 
+#Sprawdza czy wygraliśmy
 def check_win_condition(colors):
     return colors == 0b1111111111
 
+#Sprawdza dla strzału czy są zielone pozycje
 def check_exact_position(answer_word, input_word):
     colors = 0;
 
@@ -62,11 +67,12 @@ def check_exact_position(answer_word, input_word):
 
     return colors
 
+#Sprawdza dla strzału żółte pozycje
 def check_presence_condition(answer_word, input_word):
     colors = 0
     tmp_answer_word = list(answer_word)
 
-    # Bitmapa dla zielonych kolorów
+    # Bitmapa dla żółtych kolorów
     for i in range(WORD_LENGTH):
         if input_word[i] in tmp_answer_word:
             colors += 1
@@ -76,6 +82,7 @@ def check_presence_condition(answer_word, input_word):
 
     return colors
 
+#Łączy poprzednie dwie funkcje i liczy kolory
 def check_conditions(answer_word, input_word):
     exact_position_colors = check_exact_position(answer_word, input_word)
     presence_colors = check_presence_condition(answer_word, input_word)
@@ -84,6 +91,7 @@ def check_conditions(answer_word, input_word):
 
     return final_colors
 
+#0b0001110000 ==> [0,1,3,0,0]
 def colors2table(color):
     ret = [0,0,0,0,0]
     for i in reversed(range(WORD_LENGTH)):
@@ -92,6 +100,7 @@ def colors2table(color):
 
     return ret
 
+#[0,1,3,0,0] ==> 0b0001110000
 def table2color(table):
     colors = 0
     for item in table:
@@ -101,7 +110,8 @@ def table2color(table):
 
     return colors
 
-#Liczy entropie słowa -- WIP
+#=========ENTROPIA=========
+#Liczy entropie słowa
 def get_entropy(guess,words):
     list = [len(reduce(guess,color,words))/len(words) for color in all_colors]
 
@@ -114,6 +124,7 @@ def get_entropy(guess,words):
     #print("|= " + guess)
     return (guess, entropy(list, base=2))
 
+#Szuka słowa z maksymalną entropią | Używa wątków
 def find_best_guess(words):
     entropies = []
     with mp.Pool(mp.cpu_count()) as pool:
@@ -123,6 +134,7 @@ def find_best_guess(words):
 
     return best
 
+#=========INNE=========
 def order_by_letters(words):
     points={}
     for word in words:
@@ -133,7 +145,14 @@ def order_by_letters(words):
     sorted_words = dict(reversed(sorted(points.items(), key=lambda item: item[1])))
     return list(sorted_words.keys())
 
-#####MAIN######
+#Po prostu średnia ważona zaokrąglona do `rounding`
+def weighted_average(distribution, weights, rounding):
+    return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights), rounding)
+
+#|||||||||||||||||||||
+#=#=#=#=#MAIN#=#=#=#=#
+#|||||||||||||||||||||
+
 all_colors = [table2color(x) for x in list(product([3,1,0],repeat=5))]
 
 LUT = load_LUT()
