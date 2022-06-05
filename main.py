@@ -49,7 +49,8 @@ def run(answer):
         if check_win_condition(colors):
             print()
             return score
-        new_words.remove(guess)
+        if guess in new_words:
+            new_words.remove(guess)
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
@@ -108,6 +109,13 @@ def run_best_letter(answer):
         new_words.remove(guess)
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
+
+#entropia v2
+#nie działa bez load_LUT(True) w utils.py
+def run_large(answer):
+    global words, first_guess
+    first_guess = "tares"
+    return run(answer)
 
 #Wersja gry z user input
 def play(answer_word):
@@ -178,7 +186,8 @@ if __name__ == '__main__':
     "entropy":(run, "Wybór maksymalizujący entropię", "entropy.png"),
     "common":(run_most_common_word, "Wybór najczęstszego słowa", "common.png"),
     "random": (run_random, "Losowane słowa", "random.png"),
-    "letters": (run_best_letter, "Wybór według najczęstszych liter", "letters.png")
+    "letters": (run_best_letter, "Wybór według najczęstszych liter", "letters.png"),
+    "entropy_large": (run_large, "Wybór maksymalizujący entropię w pełnym zestawie", "entropy_large.png")
     }
 
     algorithm,plot_title,plot_name = modes[sys.argv[1]]

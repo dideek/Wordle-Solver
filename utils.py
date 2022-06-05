@@ -124,11 +124,34 @@ def get_entropy(guess,words):
     #print("|= " + guess)
     return (guess, entropy(list, base=2))
 
+def get_entropy_2_layer(guess, words):
+    list = [reduce(guess,color,words) for color in all_colors]
+    ent1 = entropy([len(x)/len(words) for x in list], base=2)
+    ent2s = {x: (0,0) for x in words}
+    for words2 in list:
+        for word2 in words2:
+            _, ent2 = get_entropy(word2, words2)
+            a,b = ent2s[word2]
+            ent2s[word2] = (a+ent2, b+1)
+    tmp = [(a,b/c) for a,(b,c) in ent2s.items()]
+    best = max(tmp, key=itemgetter(1))
+    print(guess, ent1+best[1])
+    return (guess, ent1+best[1])
+
 #Szuka słowa z maksymalną entropią | Używa wątków
 def find_best_guess(words):
     entropies = []
     with mp.Pool(mp.cpu_count()) as pool:
         entropies = pool.starmap(get_entropy, zip(words, repeat(words)))
+
+    best = max(entropies, key=itemgetter(1))
+
+    return best
+
+def find_best_guess_2_layer(words):
+    entropies = []
+    with mp.Pool(mp.cpu_count()) as pool:
+        entropies = pool.starmap(get_entropy_2_layer, zip(words, repeat(words)))
 
     best = max(entropies, key=itemgetter(1))
 
@@ -149,6 +172,10 @@ def order_by_letters(words):
 def weighted_average(distribution, weights, rounding):
     return round(sum([distribution[i]*weights[i] for i in range(len(distribution))])/sum(weights), rounding)
 
+def chunks(l, n):
+    n = max(1, n)
+    return (l[i:i+n] for i in range(0, len(l), n))
+
 #|||||||||||||||||||||
 #=#=#=#=#MAIN#=#=#=#=#
 #|||||||||||||||||||||
@@ -163,7 +190,8 @@ if __name__ == '__main__':
     t1 = time.time()
 
     words = load_words()
-    (guess, e) = find_best_guess(words)
+    # (guess, e) = find_best_guess(words)
+    (guess,e) = find_best_guess_2_layer(words)
 
     t2 = time.time()
     print(t2-t1)
