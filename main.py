@@ -187,7 +187,7 @@ if __name__ == '__main__':
     "common":(run_most_common_word, "Wybór najczęstszego słowa", "common.png"),
     "random": (run_random, "Losowane słowa", "random.png"),
     "letters": (run_best_letter, "Wybór według najczęstszych liter", "letters.png"),
-    "entropy_large": (run_large, "Wybór maksymalizujący entropię w pełnym zestawie", "entropy_large.png")
+    "entropy_large": (run_large, "Wybór maksymalizujący entropię w pełnym zestawie\n", "entropy_large.png")
     }
 
     algorithm,plot_title,plot_name = modes[sys.argv[1]]
