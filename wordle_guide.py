@@ -33,11 +33,14 @@ def play_guide():
         if check_win_condition(colors):
             print()
             return score
-        new_words.remove(guess)
+        if guess in new_words:
+            new_words.remove(guess)
         new_words = reduce(guess, colors, new_words)
         print(f" [{len(new_words)}] words left")
 
 if __name__ == '__main__':
+    #first_guess = "raise"
     first_guess = "raise"
     words = load_words()
-    play_guide()
+    while True:
+        play_guide()

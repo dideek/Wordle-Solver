@@ -187,12 +187,13 @@ _words = load_words()
 letters = load_letter_distribution(_words)
 
 if __name__ == '__main__':
-    t1 = time.time()
-
+    # t1 = time.time()
+    #
     words = load_words()
-    # (guess, e) = find_best_guess(words)
-    (guess,e) = find_best_guess_2_layer(words)
-
-    t2 = time.time()
-    print(t2-t1)
-    print(guess + " : " + str(e))
+    # # (guess, e) = find_best_guess(words)
+    # (guess,e) = find_best_guess_2_layer(words)
+    #
+    # t2 = time.time()
+    # print(t2-t1)
+    # print(guess + " : " + str(e))
+    print(get_entropy_2_layer("tares",words))

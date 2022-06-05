@@ -117,6 +117,12 @@ def run_large(answer):
     first_guess = "tares"
     return run(answer)
 
+#entropia v3
+def run_2_layer(answer):
+    global words, first_guess
+    first_guess = "crony" #TO NIE JEST NAJLEPSZE SŁOWO
+    return run(answer)
+
 #Wersja gry z user input
 def play(answer_word):
     print("Dawaj 5 literowe slowo")
@@ -187,7 +193,8 @@ if __name__ == '__main__':
     "common":(run_most_common_word, "Wybór najczęstszego słowa", "common.png"),
     "random": (run_random, "Losowane słowa", "random.png"),
     "letters": (run_best_letter, "Wybór według najczęstszych liter", "letters.png"),
-    "entropy_large": (run_large, "Wybór maksymalizujący entropię w pełnym zestawie\n", "entropy_large.png")
+    "entropy_large": (run_large, "Wybór maksymalizujący entropię w pełnym zestawie\n", "entropy_large.png"),
+    "2_layer": (run_2_layer, "Wybór maksymalizujący entropię 2 razy wgłąb\n", "entropy_2_layer.png")
     }
 
     algorithm,plot_title,plot_name = modes[sys.argv[1]]
